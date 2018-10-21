@@ -8,6 +8,9 @@ public class BlockChain {
         Transaction sampleTransaction = new Transaction("hones", "lanes", 50);
         Block sampleBlock = new Block(0, sampleTransaction, "00000");
         BlockChain blockchain = new BlockChain();
+        if (blockchain.validateBlockchain()){
+            
+        }
     }
 
     public BlockChain(){
@@ -71,8 +74,8 @@ public class BlockChain {
             File fout = new File(fileName);
 	        FileOutputStream fos = new FileOutputStream(fout);
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
-            for (int i = 0; i < BlockChain.blockchain.size(); i++){
-				Block block = BlockChain.blockchain.get(i);
+            for (int i = 0; i < this.chain.size(); i++){
+				Block block = this.chain.get(i);
                 Transaction transaction = block.getTransaction();
                 writer.write(block.getIndex());
 				writer.newLine();
@@ -98,6 +101,24 @@ public class BlockChain {
     }
 
     public boolean validateBlockchain(){
-        return false;
+        for (int i = 0; i < this.chain.size(); i++){
+            Block block = this.chain.get(i);
+            try {
+                if (Sha1.hash(block.toString()) != block.getHash()){
+                    return false;
+                }
+            } catch(UnsupportedEncodingException e){
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public void add(Block block){
+        this.chain.add(block);
+    }
+
+    public int getBalance(String username){
+        return 0;
     }
 }

@@ -1,3 +1,4 @@
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 
 public class Block {
@@ -18,6 +19,7 @@ public class Block {
         this.transaction = transaction;
         this.previousHash = previousHash;
         this.timestamp = new Timestamp(System.currentTimeMillis());
+        this.nonce = this.generateNonce();
         this.hash = this.calculateHash();
     }
 
@@ -31,7 +33,25 @@ public class Block {
     }
 
     private String calculateHash(){
-        return "";
+        try {
+            return Sha1.hash(this.toString());
+        } catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String generateNonce(){
+        try {
+            this.nonce = "1";
+            for (int i = 0; i < ){
+
+            }
+            return Sha1.hash(this.toString());
+        } catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String toString() {
