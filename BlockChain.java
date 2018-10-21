@@ -1,3 +1,4 @@
+
 import java.util.*;
 import java.io.*;
 
@@ -5,12 +6,33 @@ public class BlockChain {
 
     private ArrayList<Block> chain = new ArrayList<Block>();
     public static void main(String args[]){
+        Scanner scanner = new Scanner(System.in);
         Transaction sampleTransaction = new Transaction("hones", "lanes", 50);
         Block sampleBlock = new Block(0, sampleTransaction, "00000");
-        BlockChain blockchain = new BlockChain();
+        BlockChain blockchain = fromFile("sampleblockchain.txt");
+        
         if (blockchain.validateBlockchain()){
-            
+            System.out.println("\nWould you like to make a new transaction? Enter 'yes' or 'no'.\n");
+            while (scanner.next().equals("yes")) {
+                System.out.println("\nPlease enter the sender:\n");
+                String username = scanner.next();
+                System.out.println("\nPlease enter the reciever:\n");
+                String reciever = scanner.next();
+                System.out.println("\nPlease enter the amount for the transaction:\n");
+                int amount = scanner.nextInt();
+                if (blockchain.getBalance(username) >= amount) {
+                    Transaction newTransaction = new Transaction(username, reciever, amount);
+                    Block newBlock = new Block(blockchain.chain.size(), newTransaction, blockchain.chain.get(blockchain.chain.size()-1).getHash());
+                    blockchain.add(newBlock);
+                    System.out.println("\nTransaction successfully added!");
+                } else {
+                    System.out.println("\nSender does not have adequate funds!");
+                }
+                System.out.println("\nWould you like to make a new transaction? Enter 'yes' or 'no'.\n");
+            }
+            System.out.println("\nGoodbye!");
         }
+        blockchain.toFile("300010911_blockchain.txt");
     }
 
     public BlockChain(){
@@ -85,7 +107,7 @@ public class BlockChain {
 				writer.newLine();
 				writer.write(transaction.getReceiver());
 				writer.newLine();
-				writer.write(transaction.getAmount());
+				writer.write(Integer.toString(transaction.getAmount()));
 				writer.newLine();
 				writer.write(block.getNonce());
                 writer.newLine();
@@ -104,7 +126,7 @@ public class BlockChain {
         for (int i = 0; i < this.chain.size(); i++){
             Block block = this.chain.get(i);
             try {
-                if (Sha1.hash(block.toString()) != block.getHash()){
+                if (!Sha1.hash(block.toString()).equals(block.getHash())){
                     return false;
                 }
             } catch(UnsupportedEncodingException e){
@@ -119,6 +141,19 @@ public class BlockChain {
     }
 
     public int getBalance(String username){
-        return 0;
+        int count = 0;
+        for (int i = 0; i < this.chain.size(); i++){
+            Block block = this.chain.get(i);
+            Transaction transaction = block.getTransaction();
+            
+            if (transaction.getSender().equals(username)){
+                count -= transaction.getAmount();
+            }
+
+            if (transaction.getReceiver().equals(username)){
+                count += transaction.getAmount();
+            }
+        }
+        return count;
     }
 }

@@ -19,8 +19,7 @@ public class Block {
         this.transaction = transaction;
         this.previousHash = previousHash;
         this.timestamp = new Timestamp(System.currentTimeMillis());
-        this.nonce = this.generateNonce();
-        this.hash = this.calculateHash();
+        this.hash = this.generateHash();
     }
 
     public Block(int index, Transaction transaction, String previousHash, long time, String nonce, String hash){
@@ -32,20 +31,13 @@ public class Block {
         this.hash = hash;
     }
 
-    private String calculateHash(){
+    private String generateHash(){
         try {
-            return Sha1.hash(this.toString());
-        } catch(UnsupportedEncodingException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String generateNonce(){
-        try {
-            this.nonce = "1";
-            for (int i = 0; i < ){
-
+            this.nonce = "0";
+            long count = 0;
+            while (!Sha1.hash(this.toString()).startsWith("00000")){
+                count++;
+                this.nonce = Long.toHexString(count);
             }
             return Sha1.hash(this.toString());
         } catch(UnsupportedEncodingException e){
