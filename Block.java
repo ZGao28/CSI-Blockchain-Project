@@ -31,6 +31,8 @@ public class Block {
         this.hash = hash;
     }
 
+    // generate the hash for the block, by iterating through numbers until a stringified version of the number used for nonce
+    // satisfies the hash for proof of work "00000" starting value for hash.
     private String generateHash(){
         try {
             this.nonce = "0";
@@ -46,6 +48,7 @@ public class Block {
         }
     }
 
+    // to string and getters
     public String toString() {
         return timestamp.toString() + ":" + transaction.toString() + "." + nonce + previousHash;
     }

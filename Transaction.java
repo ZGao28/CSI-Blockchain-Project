@@ -1,3 +1,4 @@
+// simple transcation class to store variables and getters
 public class Transaction{
     private String sender;
     private String receiver;
